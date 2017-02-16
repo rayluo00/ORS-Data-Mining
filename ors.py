@@ -64,14 +64,14 @@ def SlopeEvaluation (ls, sz):
         slope = ls[i] - ls[i-1]
         print(slope)
 
+##############################################################################################
 def LinearRegression (ls, sz):
-    xi = numpy.arange(0,9)
-    A = numpy.array([xi, numpy.ones(9)])
-    y = [19,20,20.5,21.5,22,23,23,25.5,24]
-    w = numpy.linalg.lstsq(A.T,y)[0]
+    xi = numpy.arange(0, sz)
+    A = numpy.array([xi, numpy.ones(sz)])
+    w = numpy.linalg.lstsq(A.T, ls)[0]
 
-    line = w[0]*xi*w[1]
-    pylab.plot(xi,line,'r-',xi,y,'o')
+    line = w[0] * xi + w[1]
+    pylab.plot(xi, line, 'r-', xi, ls, 'o')
     pylab.savefig('linear_reg.png')
 
 ##############################################################################################
