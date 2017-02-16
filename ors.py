@@ -27,20 +27,26 @@ def ORS_CurrentData ():
     ors_request = requests.get('http://api.rsbuddy.com/grandExchange?a=guidePrice&i='+itemID)
     itemData = ors_request.json()
 
-def findQuartiles (scList, sz):
-    if len(scList) % 2 == 0:
-        mid = len(scList) / 2
+def FiveNumSummary (scList, sz):
+
+    if sz % 2 == 0:
+        mid = sz / 2
         lowq = statistics.median(scList[:math.floor(mid-1)])
         hiq = statistics.median(scList[math.ceil(mid):])
     else:
-        mid = int(math.ceil(len(scList)/2))-1
-        print(math.ceil(len(scList)/2))
+        mid = int(math.ceil(sz/2))-1
         lowq = statistics.median(scList[:mid])
         hiq = statistics.median(scList[mid+1:])
     
     med = statistics.median(scList)
 
-    return med, lowq, hiq
+    print('min',scList[0],'\n'
+            'q1',lowq,'\n'
+            'median',med,'\n'
+            'q3',hiq,'\n'
+            'max',scList[sz-1],'\n')
+
+
 
 ##############################################################################################
 '''
@@ -70,18 +76,12 @@ def ORS_HistoricalData ():
     itemDict['sellingCompleted'] = []
     for i in range(sz):
         if 'sellingCompleted' in itemData[i]:
-            #print(itemData[i]['sellingCompleted'])
             itemDict['sellingCompleted'].append(itemData[i]['sellingCompleted'])
 
     itemDict['sellingCompleted'].sort()
-    #print(itemDict['sellingCompleted'],'\n\n')
-    d_len = len(itemDict['sellingCompleted'])
-    med, lowq, hiq = findQuartiles(itemDict['sellingCompleted'], d_len)
-    print('min',itemDict['sellingCompleted'][0],'\n'
-            'max',itemDict['sellingCompleted'][d_len-1],'\n'
-            'median',med,'\n'
-            'q1',lowq,'\n'
-            'q3',hiq,'\n')
+    sclens = len(itemDict['sellingCompleted'])
+
+    FiveNumSummary(itemDict['sellingCompleted'], sclens)
 
 if __name__ == '__main__':
     #ORS_CurrentData()
