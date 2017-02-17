@@ -114,6 +114,8 @@ def LinearRegression (ls):
     w = numpy.linalg.lstsq(A.T, itemLs)[0]
 
     line = w[0] * xi + w[1]
+    pylan.xlabel('time')
+    pylab.ylabel(param)
     pylab.plot(xi, line, 'r-', xi, itemLs, 'o')
     pylab.savefig('linear_reg.png')
     #SendEmail()
@@ -142,6 +144,7 @@ def ORS_HistoricalData ():
     sz = len(itemData)
 
     #FiveNumSummary(itemData)
+    PlotData(itemData)
     SlopeEvaluation(itemData)
     #LinearRegression(itemData)
 
