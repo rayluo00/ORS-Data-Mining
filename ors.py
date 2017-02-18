@@ -100,7 +100,7 @@ def SendEmail ():
     s.quit()
 
 ##############################################################################################
-def LinearRegression (ls):
+def PlotData (ls):
     itemLs = []
     param = 'sellingCompleted'
 
@@ -114,10 +114,10 @@ def LinearRegression (ls):
     w = numpy.linalg.lstsq(A.T, itemLs)[0]
 
     line = w[0] * xi + w[1]
-    pylan.xlabel('time')
+    pylab.xlabel('time')
     pylab.ylabel(param)
     pylab.plot(xi, line, 'r-', xi, itemLs, 'o')
-    pylab.savefig('linear_reg.png')
+    pylab.savefig(param+'.png')
     #SendEmail()
 
 ##############################################################################################
@@ -134,7 +134,7 @@ JSON Return Data:
  "overallCompleted",}
 '''
 def ORS_HistoricalData ():
-    itemID = '536'
+    itemID = '13961'
     startTime = '1357027200000'
     timeInterval = '30'
 
@@ -145,8 +145,7 @@ def ORS_HistoricalData ():
 
     #FiveNumSummary(itemData)
     PlotData(itemData)
-    SlopeEvaluation(itemData)
-    #LinearRegression(itemData)
+    #SlopeEvaluation(itemData)
 
 if __name__ == '__main__':
     #ORS_CurrentData()
