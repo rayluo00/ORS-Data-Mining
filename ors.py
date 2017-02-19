@@ -13,10 +13,7 @@ import statistics
 import matplotlib
 matplotlib.use('Agg')
 import pylab
-import smtplib
-
-from email.mime.image import MIMEImage
-from email.mime.multipart import MIMEMultipart
+import scipy.stats
 
 ##############################################################################################
 '''
@@ -83,42 +80,31 @@ def SlopeEvaluation (ls):
             ts = (ls[i]['ts']-ls[i-1]['ts'])/60000
             sslope = (ls[i][sc] - ls[i-1][sc])/ts
             bslope =  (ls[i][bc] - ls[i-1][bc])/ts
-            print('sell slope %.2f'%sslope,'| c sell',ls[i][sp],'| p sell',ls[i-1][sp],
-                    '\nbuy slope %.2f'%bslope,'| c buy',ls[i][bp],'| p buy',ls[i-1][bp],'\n')
-
-##############################################################################################
-def SendEmail ():
-    img_data = open('linear_reg.png', 'rb'.read())
-    msg = MIMEMultipart()
-    msg['Subject'] = 'Linear Regression Graph'
-    #msg['From']
-    #msg['To']
-    
-    s = smtplib.SMTP(server, port)
-    s.send_message(msg)
-    print('email sent.')
-    s.quit()
+            spslope = (ls[i][sp] - ls[i-1][sp])/ts
+            bpslope = (ls[i][bp] - ls[i-1][bp])/ts
+            #print('sell %.2f'%sslope,'| sp %.4f'%spslope,'| buy %.2f'%bslope,'| bp %.4f'%bpslope,'\n')
 
 ##############################################################################################
 def PlotData (ls):
     itemLs = []
-    param = 'sellingCompleted'
+    paramLs = ['buyingPrice', 'buyingCompleted', 'sellingPrice', 'sellingCompleted']
 
-    for item in ls:
-        if param in item:
-            itemLs.append(item[param])
+    for param in paramLs: 
+        itemLs = []
+        for item in ls:
+            if param in item:
+                itemLs.append(item[param])
 
-    sz = len(itemLs)
-    xi = numpy.arange(0, sz)
-    A = numpy.array([xi, numpy.ones(sz)])
-    w = numpy.linalg.lstsq(A.T, itemLs)[0]
+        sz = len(itemLs)
+        xi = numpy.arange(0, sz)
+        A = numpy.array([xi, numpy.ones(sz)])
 
-    line = w[0] * xi + w[1]
-    pylab.xlabel('time')
-    pylab.ylabel(param)
-    pylab.plot(xi, line, 'r-', xi, itemLs, 'o')
-    pylab.savefig(param+'.png')
-    #SendEmail()
+        slope, intercept, r_value, p_value, stderr = scipy.stats.linregress(xi, itemLs)
+        line = slope * xi + intercept
+        pylab.plot(xi, itemLs, 'o', xi, line)
+        pylab.savefig(param+'.png')
+        print(slope,'|',intercept,'|',r_value,'|',p_value,'|',stderr)
+        matplotlib.pyplot.close()
 
 ##############################################################################################
 '''
@@ -134,7 +120,7 @@ JSON Return Data:
  "overallCompleted",}
 '''
 def ORS_HistoricalData ():
-    itemID = '13961'
+    itemID = '536'
     startTime = '1357027200000'
     timeInterval = '30'
 
@@ -145,7 +131,7 @@ def ORS_HistoricalData ():
 
     #FiveNumSummary(itemData)
     PlotData(itemData)
-    #SlopeEvaluation(itemData)
+    SlopeEvaluation(itemData)
 
 if __name__ == '__main__':
     #ORS_CurrentData()
