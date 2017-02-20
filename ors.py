@@ -33,13 +33,21 @@ def ORS_CurrentData ():
     itemData = ors_request.json()
 
 ##############################################################################################
-def FiveNumSummary (ls):
-    param = 'sellingCompleted'
+def GetItemList (ls, param):
     itemLs = []
 
     for item in ls:
         if param in item:
             itemLs.append(item[param])
+        else:
+            itemLs.append(0)
+
+    return itemLs
+
+##############################################################################################
+def FiveNumSummary (ls):
+    param = 'sellingCompleted'
+    itemLs = GetItemList(ls, param)
 
     itemLs.sort()
     sz = len(itemLs)
@@ -76,24 +84,30 @@ def SlopeEvaluation (ls):
     sz = len(ls)
 
     for i in range(1, sz):
-        if sc in ls[i] and sc in ls[i-1] and bp in ls[i] and bp in ls[i-1]:
+        try:
             ts = (ls[i]['ts']-ls[i-1]['ts'])/60000
+            ts2 = (ls[i+1]['ts']-ls[i]['ts'])/60000
             sslope = (ls[i][sc] - ls[i-1][sc])/ts
             bslope =  (ls[i][bc] - ls[i-1][bc])/ts
+            sslope2 = (ls[i+1][sc] - ls[i][sc])/ts2
+            bslope2 =  (ls[i+1][bc] - ls[i][bc])/ts2
+
             spslope = (ls[i][sp] - ls[i-1][sp])/ts
             bpslope = (ls[i][bp] - ls[i-1][bp])/ts
-            #print('sell %.2f'%sslope,'| sp %.4f'%spslope,'| buy %.2f'%bslope,'| bp %.4f'%bpslope,'\n')
+            spslope2 = (ls[i+1][sp] - ls[i][sp])/ts2
+            bpslope2 = (ls[i+1][bp] - ls[i][bp])/ts2
+            print('sell %.2f'%sslope,'| sp %.4f'%spslope,'| buy %.2f'%bslope,'| bp %.4f'%bpslope)
+            print('sell %.2f'%sslope2,'| sp %.4f'%spslope2,'| buy %.2f'%bslope2,'| bp %.4f'%bpslope2,'\n')
+        except Exception as e:
+            print(end='')
 
 ##############################################################################################
 def PlotData (ls):
     itemLs = []
-    paramLs = ['buyingPrice', 'buyingCompleted', 'sellingPrice', 'sellingCompleted']
+    paramLs = ['buyingPrice', 'buyingCompleted', 'sellingPrice', 'sellingCompleted', 'overallPrice', 'overallCompleted']
 
     for param in paramLs: 
-        itemLs = []
-        for item in ls:
-            if param in item:
-                itemLs.append(item[param])
+        itemLs = GetItemList(ls, param)
 
         sz = len(itemLs)
         xi = numpy.arange(0, sz)
@@ -105,6 +119,20 @@ def PlotData (ls):
         pylab.savefig(param+'.png')
         print(slope,'|',intercept,'|',r_value,'|',p_value,'|',stderr)
         matplotlib.pyplot.close()
+
+##############################################################################################
+def PlotNormalDist (ls):
+    param = 'overallCompleted'
+    itemLs = GetItemList(ls, param)
+
+    mean = statistics.mean(itemLs)
+    variance = statistics.variance(itemLs)
+    sigma = math.sqrt(variance)
+
+    fig = matplotlib.pyplot.figure()
+    normDist = numpy.linspace(min(itemLs), max(itemLs), len(itemLs))
+    matplotlib.pyplot.plot(matplotlib.mlab.normpdf(normDist, mean, sigma))
+    fig.savefig(param+'_pdf.png', dpi=fig.dpi) 
 
 ##############################################################################################
 '''
@@ -120,7 +148,7 @@ JSON Return Data:
  "overallCompleted",}
 '''
 def ORS_HistoricalData ():
-    itemID = '536'
+    itemID = '1515'
     startTime = '1357027200000'
     timeInterval = '30'
 
@@ -130,8 +158,9 @@ def ORS_HistoricalData ():
     sz = len(itemData)
 
     #FiveNumSummary(itemData)
-    PlotData(itemData)
-    SlopeEvaluation(itemData)
+    #PlotData(itemData)
+    PlotNormalDist(itemData)
+    #SlopeEvaluation(itemData)
 
 if __name__ == '__main__':
     #ORS_CurrentData()
