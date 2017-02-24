@@ -105,7 +105,7 @@ def SlopeEvaluation (ls):
 def PlotData (ls):
     itemLs = []
     #paramLs = ['buyingPrice', 'buyingCompleted', 'sellingPrice', 'sellingCompleted', 'overallPrice', 'overallCompleted']
-    paramLs = ['buyingCompleted', 'sellingCompleted']
+    paramLs = ['sellingCompleted', 'buyingCompleted']
 
     for param in paramLs: 
         itemLs = GetItemList(ls, param)
