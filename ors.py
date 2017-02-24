@@ -104,7 +104,8 @@ def SlopeEvaluation (ls):
 ##############################################################################################
 def PlotData (ls):
     itemLs = []
-    paramLs = ['buyingPrice', 'buyingCompleted', 'sellingPrice', 'sellingCompleted', 'overallPrice', 'overallCompleted']
+    #paramLs = ['buyingPrice', 'buyingCompleted', 'sellingPrice', 'sellingCompleted', 'overallPrice', 'overallCompleted']
+    paramLs = ['buyingCompleted', 'sellingCompleted']
 
     for param in paramLs: 
         itemLs = GetItemList(ls, param)
@@ -118,9 +119,10 @@ def PlotData (ls):
         pylab.plot(xi, itemLs, 'o', xi, line)
         pylab.xlabel('time')
         pylab.ylabel(param)
-        pylab.savefig(param+'.png')
+        #pylab.savefig(param+'.png')
         print(slope,'|',intercept,'|',r_value,'|',p_value,'|',stderr)
-        matplotlib.pyplot.close()
+        #matplotlib.pyplot.close()
+    pylab.savefig('buy_sell_plot.png')
 
 ##############################################################################################
 def PlotNormalDist (ls):
@@ -162,7 +164,7 @@ def ORS_HistoricalData ():
 
     #FiveNumSummary(itemData)
     PlotData(itemData)
-    PlotNormalDist(itemData)
+    #PlotNormalDist(itemData)
     #SlopeEvaluation(itemData)
 
 if __name__ == '__main__':
