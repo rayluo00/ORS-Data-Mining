@@ -37,7 +37,7 @@ def GetItemList (ls, param):
     itemLs = []
 
     for item in ls:
-        if param in item and item[param] > 100000:
+        if param in item and item[param] > 130000:
             itemLs.append(item[param])
         else:
             itemLs.append(0)
