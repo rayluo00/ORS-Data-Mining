@@ -37,7 +37,7 @@ def GetItemList (ls, param):
     itemLs = []
 
     for item in ls:
-        if param in item:
+        if param in item and item[param] > 100000:
             itemLs.append(item[param])
         else:
             itemLs.append(0)
@@ -118,7 +118,7 @@ def PlotData (ls):
         line = slope * xi + intercept
         pylab.plot(xi, itemLs, 'o', xi, line)
         pylab.xlabel('time')
-        pylab.ylabel(param)
+        pylab.ylabel('completed')
         #pylab.savefig(param+'.png')
         print(slope,'|',intercept,'|',r_value,'|',p_value,'|',stderr)
         #matplotlib.pyplot.close()
