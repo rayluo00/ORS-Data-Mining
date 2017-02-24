@@ -116,6 +116,8 @@ def PlotData (ls):
         slope, intercept, r_value, p_value, stderr = scipy.stats.linregress(xi, itemLs)
         line = slope * xi + intercept
         pylab.plot(xi, itemLs, 'o', xi, line)
+        pylab.xlabel('time')
+        pylab.ylabel(param)
         pylab.savefig(param+'.png')
         print(slope,'|',intercept,'|',r_value,'|',p_value,'|',stderr)
         matplotlib.pyplot.close()
@@ -132,6 +134,7 @@ def PlotNormalDist (ls):
     fig = matplotlib.pyplot.figure()
     normDist = numpy.linspace(min(itemLs), max(itemLs), len(itemLs))
     matplotlib.pyplot.plot(matplotlib.mlab.normpdf(normDist, mean, sigma))
+    matplotlib.pyplot.xlabel(param)
     fig.savefig(param+'_pdf.png', dpi=fig.dpi) 
 
 ##############################################################################################
@@ -158,7 +161,7 @@ def ORS_HistoricalData ():
     sz = len(itemData)
 
     #FiveNumSummary(itemData)
-    #PlotData(itemData)
+    PlotData(itemData)
     PlotNormalDist(itemData)
     #SlopeEvaluation(itemData)
 
