@@ -104,8 +104,8 @@ def SlopeEvaluation (ls):
 ##############################################################################################
 def PlotData (ls):
     itemLs = []
-    #paramLs = ['buyingPrice', 'buyingCompleted', 'sellingPrice', 'sellingCompleted', 'overallPrice', 'overallCompleted']
-    paramLs = ['sellingCompleted', 'buyingCompleted']
+    paramLs = ['buyingPrice', 'buyingCompleted', 'sellingPrice', 'sellingCompleted', 'overallPrice', 'overallCompleted']
+    #paramLs = ['sellingCompleted', 'buyingCompleted']
 
     for param in paramLs: 
         itemLs = GetItemList(ls, param)
@@ -118,15 +118,15 @@ def PlotData (ls):
         line = slope * xi + intercept
         pylab.plot(xi, itemLs, 'o', xi, line)
         pylab.xlabel('time')
-        pylab.ylabel('completed')
-        #pylab.savefig(param+'.png')
+        pylab.ylabel(param)
+        pylab.savefig(param+'.png')
         print(slope,'|',intercept,'|',r_value,'|',p_value,'|',stderr)
-        #matplotlib.pyplot.close()
-    pylab.savefig('buy_sell_plot.png')
+        matplotlib.pyplot.close()
+    #pylab.savefig('buy_sell_plot.png')
 
 ##############################################################################################
 def PlotNormalDist (ls):
-    param = 'overallCompleted'
+    param = 'sellingCompleted'
     itemLs = GetItemList(ls, param)
 
     mean = statistics.mean(itemLs)
@@ -138,6 +138,15 @@ def PlotNormalDist (ls):
     matplotlib.pyplot.plot(matplotlib.mlab.normpdf(normDist, mean, sigma))
     matplotlib.pyplot.xlabel(param)
     fig.savefig(param+'_pdf.png', dpi=fig.dpi) 
+
+##############################################################################################
+def UnsupervisedAnomaly(ls):
+    itemLs = []
+    paramLs = ['sellingCompleted', 'buyingCompleted']
+
+    for param in paramLs:
+        itemLs = GetItemList(ls, param)
+
 
 ##############################################################################################
 '''
@@ -154,7 +163,8 @@ JSON Return Data:
 '''
 def ORS_HistoricalData ():
     itemID = '1515'
-    startTime = '1357027200000'
+    #startTime = '1357027200000'
+    startTime = str(1488614400000 - (86400000*28))
     timeInterval = '30'
 
     orsRequest = requests.get('https://api.rsbuddy.com/grandExchange?a=graph&g='+timeInterval+
@@ -166,6 +176,7 @@ def ORS_HistoricalData ():
     PlotData(itemData)
     #PlotNormalDist(itemData)
     #SlopeEvaluation(itemData)
+    UnsupervisedAnomaly(itemData)
 
 if __name__ == '__main__':
     #ORS_CurrentData()
