@@ -14,6 +14,7 @@ import matplotlib
 matplotlib.use('Agg')
 import pylab
 import scipy.stats
+from scipy.cluster.vq import kmeans, vq
 
 ##############################################################################################
 '''
@@ -37,7 +38,7 @@ def GetItemList (ls, param):
     itemLs = []
 
     for item in ls:
-        if param in item and item[param] > 130000:
+        if param in item:# and item[param] > 130000:
             itemLs.append(item[param])
         else:
             itemLs.append(0)
@@ -173,7 +174,7 @@ def ORS_HistoricalData ():
     sz = len(itemData)
 
     #FiveNumSummary(itemData)
-    PlotData(itemData)
+    #PlotData(itemData)
     #PlotNormalDist(itemData)
     #SlopeEvaluation(itemData)
     UnsupervisedAnomaly(itemData)
