@@ -1,7 +1,7 @@
 '''
 ors.py
 
-Authors: Raymond Weiming Luo and Ben Ellerby
+Authors: Raymond Weiming Luo
 '''
 
 import json
@@ -14,7 +14,10 @@ import matplotlib
 matplotlib.use('Agg')
 import pylab
 import scipy.stats
-from scipy.cluster.vq import kmeans, vq
+from scipy.cluster.vq import kmeans, vq, kmeans2
+from numpy import vstack, array
+from numpy.random import rand
+from pylab import plot, show
 
 ##############################################################################################
 '''
@@ -38,10 +41,11 @@ def GetItemList (ls, param):
     itemLs = []
 
     for item in ls:
-        if param in item:# and item[param] > 130000:
-            itemLs.append(item[param])
+        if param in item:
+        #if param in item and item[param] > 130000:
+            itemLs.append(float(item[param]))
         else:
-            itemLs.append(0)
+            itemLs.append(0.0)
 
     return itemLs
 
@@ -117,7 +121,7 @@ def PlotData (ls):
 
         slope, intercept, r_value, p_value, stderr = scipy.stats.linregress(xi, itemLs)
         line = slope * xi + intercept
-        pylab.plot(xi, itemLs, 'o', xi, line)
+        plot(xi, itemLs, 'o', xi, line)
         pylab.xlabel('time')
         pylab.ylabel(param)
         pylab.savefig(param+'.png')
@@ -143,11 +147,31 @@ def PlotNormalDist (ls):
 ##############################################################################################
 def UnsupervisedAnomaly(ls):
     itemLs = []
-    paramLs = ['sellingCompleted', 'buyingCompleted']
+    param = 'sellingCompleted'
 
-    for param in paramLs:
-        itemLs = GetItemList(ls, param)
+    itemLs = GetItemList(ls, param)
+    sz = len(itemLs)
+    xi = numpy.arange(0, sz)
+    data = []
+    
+    for i,j in zip(xi, itemLs):
+        data.append([i,j])
 
+    colors = ('red', 'blue')
+    xy = numpy.array(data)
+    centroids,_ = kmeans(xy,2)
+    print(centroids)
+    # manually set centroids
+    centroids = numpy.array([[736.30742049,77302.41342756],[680, 150000]])
+    idx,_ = vq(xy, centroids)
+      
+    # plot colored points
+    #pylab.scatter(xy[:,0],xy[:,1], c=colors)
+       
+    # mark centroids as (X)
+    plot(xy[idx==0,0],xy[idx==0,1], 'ob', xy[idx==1,0],xy[idx==1,1], 'or')
+    #plot(centroids[:,0],centroids[:,1],'sg',markersize=8)
+    pylab.savefig('kmeans.png')
 
 ##############################################################################################
 '''
