@@ -170,7 +170,7 @@ def UnsupervisedAnomaly(ls):
        
     # mark centroids as (X)
     plot(xy[idx==0,0],xy[idx==0,1], 'ob', xy[idx==1,0],xy[idx==1,1], 'or')
-    #plot(centroids[:,0],centroids[:,1],'sg',markersize=8)
+    plot(centroids[:,0],centroids[:,1],'sg',markersize=8)
     pylab.savefig('kmeans.png')
 
 ##############################################################################################
