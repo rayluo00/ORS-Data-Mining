@@ -109,8 +109,8 @@ def SlopeEvaluation (ls):
 ##############################################################################################
 def PlotData (ls):
     itemLs = []
-    paramLs = ['buyingPrice', 'buyingCompleted', 'sellingPrice', 'sellingCompleted', 'overallPrice', 'overallCompleted']
-    #paramLs = ['sellingCompleted', 'buyingCompleted']
+    #paramLs = ['buyingPrice', 'buyingCompleted', 'sellingPrice', 'sellingCompleted', 'overallPrice', 'overallCompleted']
+    paramLs = ['overallPrice']
 
     for param in paramLs: 
         itemLs = GetItemList(ls, param)
@@ -152,6 +152,7 @@ def UnsupervisedAnomaly(ls):
     itemLs = GetItemList(ls, param)
     sz = len(itemLs)
     xi = numpy.arange(0, sz)
+
     data = []
     
     for i,j in zip(xi, itemLs):
@@ -160,6 +161,14 @@ def UnsupervisedAnomaly(ls):
     colors = ('red', 'blue')
     xy = numpy.array(data)
     centroids,_ = kmeans(xy,2)
+
+    mean = statistics.mean(itemLs)
+    variance = statistics.variance(itemLs)
+    sigma = math.sqrt(variance)
+
+    mid = len(xi)//2
+
+    centroids = numpy.array([[mid, mean], [mid, (mean+(sigma*3))]])
 
     # manual centroids
     # yew logs
@@ -191,8 +200,9 @@ def ORS_HistoricalData ():
     # yew logs - 1515
     # bronze dagger - 1205
 
-    itemID = '1515'
+    #itemID = '1515'
     #itemID = '1205'
+    itemID = '02'
 
     #startTime = '1357027200000'
     startTime = str(1488614400000 - (86400000*28))
@@ -204,7 +214,7 @@ def ORS_HistoricalData ():
     sz = len(itemData)
 
     #FiveNumSummary(itemData)
-    #PlotData(itemData)
+    PlotData(itemData)
     #PlotNormalDist(itemData)
     #SlopeEvaluation(itemData)
     UnsupervisedAnomaly(itemData)
