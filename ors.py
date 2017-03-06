@@ -160,17 +160,18 @@ def UnsupervisedAnomaly(ls):
     colors = ('red', 'blue')
     xy = numpy.array(data)
     centroids,_ = kmeans(xy,2)
-    print(centroids)
-    # manually set centroids
-    centroids = numpy.array([[736.30742049,77302.41342756],[680, 150000]])
+
+    # manual centroids
+    # yew logs
+    #centroids = numpy.array([[736.30742049,77302.41342756],[680, 140000]])
+
+    # bronze dagger
+    #centroids = numpy.array([[700,10000],[700,100]])
+
     idx,_ = vq(xy, centroids)
-      
-    # plot colored points
-    #pylab.scatter(xy[:,0],xy[:,1], c=colors)
-       
-    # mark centroids as (X)
+    
     plot(xy[idx==0,0],xy[idx==0,1], 'ob', xy[idx==1,0],xy[idx==1,1], 'or')
-    plot(centroids[:,0],centroids[:,1],'sg',markersize=8)
+    #plot(centroids[:,0],centroids[:,1],'sg',markersize=8)
     pylab.savefig('kmeans.png')
 
 ##############################################################################################
@@ -187,7 +188,12 @@ JSON Return Data:
  "overallCompleted",}
 '''
 def ORS_HistoricalData ():
+    # yew logs - 1515
+    # bronze dagger - 1205
+
     itemID = '1515'
+    #itemID = '1205'
+
     #startTime = '1357027200000'
     startTime = str(1488614400000 - (86400000*28))
     timeInterval = '30'
